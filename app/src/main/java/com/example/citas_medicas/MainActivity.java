@@ -94,13 +94,15 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             this.MensajeCuidado("Existen caracteres invalidos en la cedula");
             return;
         }
-
+//damos formato a la fecha
         SimpleDateFormat dataFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
         Date date = new Date();
         String fecha = dataFormat.format(date);
         StringBuilder constructor = new StringBuilder();
+//validamos que el campo cedula tenga algun numero
         if (!cedu.isEmpty()) {
             Cursor fila = BaseDeDatos.rawQuery("SELECT Nombre,Apellidos,Fecha,Hora FROM Citas WHERE Cedula = ? order by FECHA, HORA", new String[]{cedu});
+            //miramos si el numero de cedula ingresado esta registrado en base de datos y muestro con un mensaje de alerta con la informacion de la cita medica
             if (fila.moveToFirst()) {
                 //declaro variables  indicando que son strings
                 String nombre = fila.getString(0);
@@ -126,7 +128,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 builder.setMessage(constructor.toString());
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-            } else {
+            }
+            //si no esta registrada muestro con un mensaje de alerta que el usuario no existe en base de datos
+            else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Resultado de la consulta");
                 builder.setMessage("Se ha presentado un error, la cedula: " + cedu + " no existe en la base de datos actual ó no tiene agendada cita medica " +
@@ -135,7 +139,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 alertDialog.show();
             }
             BaseDeDatos.close();
-        } else {
+        }
+        //mensaje que indica que no ha ingresado ningun valor al campo de texto de cedula
+        else {
             Toast.makeText(this, "No ha ingresado la cedula para generar la busqueda", Toast.LENGTH_LONG).show();
         }
 
