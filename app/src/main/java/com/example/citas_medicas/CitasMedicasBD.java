@@ -1,9 +1,10 @@
+//clase de base de datos usando SQLite
 package com.example.citas_medicas;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-//clase de base de datos
+
 public class CitasMedicasBD extends SQLiteOpenHelper {
     //private static final String NOMBRE_BD = "administracion";
     //private static final String TABLA_CITAS = "CREATE TABLE Citas ( id INTEGER NOT NULL, Cedula TEXT NOT NULL, Nombre TEXT NOT NULL, Apellidos TEXT NOT NULL, Fecha TEXT NOT NULL, Hora TEXT NOT NULL, Estado boolean DEFAULT 1, PRIMARY KEY(id))";

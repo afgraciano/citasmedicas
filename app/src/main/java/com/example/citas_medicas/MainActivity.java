@@ -1,3 +1,4 @@
+//Creamos la clase principal para iniciar el programa e importamos las diferentes librerias necesarias
 package com.example.citas_medicas;
 
 import androidx.appcompat.app.AlertDialog;
@@ -26,6 +27,7 @@ import java.util.regex.*;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
+//se realiza mi método main para inicializar el programa
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
 
@@ -147,10 +149,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     }
 
-    public void insertar(View view) { // metodo para insertar en la base de datos empleando un boton y sensando los campos
+    // metodo para insertar en la base de datos empleando un boton y sensando los campos
+    public void insertar(View view) {
         CitasMedicasBD admin = new CitasMedicasBD(this, "administracion2", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-////declaro variables y asigno strings
+//declaro variables y asigno strings
         String cedula = txtCedula.getText().toString();
         String nombre = txtNombre.getText().toString();
         String apellido = txtApellido.getText().toString();
@@ -165,11 +168,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             this.MensajeCuidado("La fecha es invalida, escriba la fecha en formato DD-MM-AAAA separado de guiones");
             return;
         }
-        if(hora.indexOf("24:00") != -1)  {//comprobamos que la hora no sea 24:00 ya que debe ser 00:00
+        if (hora.indexOf("24:00") != -1) {//comprobamos que la hora no sea 24:00 ya que debe ser 00:00
             this.MensajeCuidado("La hora no es valida");
             return;
         }
-        if(!this.Time24HoursValidator(hora))  {//comprobamos que la hora sea valida
+        if (!this.Time24HoursValidator(hora)) {//comprobamos que la hora sea valida
             this.MensajeCuidado("La hora no es valida");
             return;
         }
@@ -243,7 +246,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
         return true;
     }
-//metodo para validar ingreso en campo de hora militar
+
+    //metodo para validar ingreso en campo de hora militar
     private boolean Time24HoursValidator(String valor) {
 
         try {
@@ -255,8 +259,9 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
         return true;
     }
-//CLASE para validar horario militar
-    public class Time24HoursValidator{
+
+    //CLASE para validar horario militar
+    public class Time24HoursValidator {
 
         private Pattern pattern;
         private Matcher matcher;
@@ -264,22 +269,21 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         private static final String TIME24HOURS_PATTERN =
                 "([01]?[0-9]|2[0-3]):[0-5][0-9]";
 
-        public Time24HoursValidator(){
+        public Time24HoursValidator() {
             pattern = Pattern.compile(TIME24HOURS_PATTERN);
         }
 
         /**
          * valida tiempo en formato 24 horas con expresion regular
-         * @param time  direcion para validacion
+         *
+         * @param time direcion para validacion
          * @return true formato de tiempo valido, false si formato de tiempo invalido
          */
-        public boolean validate(final String time){
+        public boolean validate(final String time) {
 
             matcher = pattern.matcher(time);
             return matcher.matches();
 
         }
     }
-
-
 }

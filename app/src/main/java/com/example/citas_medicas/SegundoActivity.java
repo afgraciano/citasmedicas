@@ -1,3 +1,4 @@
+//clase segunda activity para escanear la cedula con la camara
 package com.example.citas_medicas;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +12,7 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-//clase segunda activity para escanear la cedula con la camara
+
 public class SegundoActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler{
     private ZXingScannerView mScannerView;
     private String mensaje,men,resultado;
