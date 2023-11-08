@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     private String dato;
     private EditText txtCedula, txtNombre, txtApellido, txtFecha, txtHora;
 
+    private String nombreBD = "administracion6";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     //metodo para consultar la cedula en la base de datos
     private void Busqueda() {
-        CitasMedicasBD admin = new CitasMedicasBD(this, "administracion2", null, 1);
+        CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
         String cedu = txtCedula.getText().toString();
         if (cedu.equals("BORRAR")) {  //borra toda la base de datos poniendo en el campo de cedula la palabra BORRAR y presionando boton "Buscar Documento"
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         StringBuilder constructor = new StringBuilder();
 //validamos que el campo cedula tenga algun numero
         if (!cedu.isEmpty()) {
-            Cursor fila = BaseDeDatos.rawQuery("SELECT Nombre,Apellidos,Fecha,Hora FROM Citas WHERE Cedula = ? order by FECHA, HORA", new String[]{cedu});
+            Cursor fila = BaseDeDatos.rawQuery("SELECT Nombre,Apellidos,Fecha,Hora, TipoCita FROM Citas WHERE Cedula = ? order by FECHA, HORA", new String[]{cedu});
             //miramos si el numero de cedula ingresado esta registrado en base de datos y muestro con un mensaje de alerta con la informacion de la cita medica
             if (fila.moveToFirst()) {
                 //declaro variables  indicando que son strings
@@ -111,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 String apellidos = fila.getString(1);
                 String fecha1 = fila.getString(2);
                 String hora = fila.getString(3);
+
+
+
+
                 txtNombre.setText(nombre);
                 txtApellido.setText(apellidos);
                 txtFecha.setText(fecha1);
@@ -119,12 +124,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 builder.setTitle("Información");
                 constructor.append("El usuario: " + nombre + " " + apellidos + " identificado con cedula: " + cedu + " tiene las siguientes citas:\r\n");
                 do {
+                    int tipoCita = fila.getInt(4); // Obtener el tipo de cita
+                    String tipoCitaNombre = obtenerNombreTipoCita(tipoCita); // Obtener el nombre del tipo de cita
                     fecha1 = fila.getString(2);
                     hora = fila.getString(3);
                     if (fecha1.equals(fecha)) {
-                        constructor.append("El dia de hoy " + fecha1 + " a las " + hora + " \r\n");
+                        constructor.append("El dia de hoy " + fecha1 + " a las " + hora + " de " + tipoCitaNombre + "\r\n");
                     } else {
-                        constructor.append("El dia " + fecha1 + " a las " + hora + " \r\n");
+                        constructor.append("El dia " + fecha1 + " a las " + hora + " de " + tipoCitaNombre + " \r\n");
                     }
                 } while (fila.moveToNext());
                 builder.setMessage(constructor.toString());
@@ -149,9 +156,35 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     }
 
+
+   // Método para obtener el nombre del tipo de cita a partir de su ID
+    private String obtenerNombreTipoCita(int tipoCitaId)
+    {
+        CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
+        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+        Cursor cursor = BaseDeDatos.rawQuery("SELECT nombre FROM TipoCita WHERE rowid = ?", new String[]{String.valueOf(tipoCitaId)});
+
+        // Cursor cursor = BaseDeDatos.rawQuery("SELECT nombre, rowid FROM TipoCita ", new String[]{});
+
+
+        if (cursor.moveToFirst())
+        {
+            String nombre = cursor.getString(0);
+           // Integer elId = cursor.getInt(1);
+
+            return nombre;
+        } else
+        {
+            return "Desconocido";
+        }
+    }
+
+
+
+
     // metodo para insertar en la base de datos empleando un boton y sensando los campos
     public void insertar(View view) {
-        CitasMedicasBD admin = new CitasMedicasBD(this, "administracion2", null, 1);
+        CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 //declaro variables y asigno strings
         String cedula = txtCedula.getText().toString();
@@ -217,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     //metodo para borrar toda la base de datos
     private void LimpiarCitas() {
-        CitasMedicasBD admin = new CitasMedicasBD(this, "administracion2", null, 1);
+        CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
         BaseDeDatos.execSQL("DELETE FROM Citas;");
     }

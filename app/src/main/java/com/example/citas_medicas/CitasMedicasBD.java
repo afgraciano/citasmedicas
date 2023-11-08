@@ -16,7 +16,7 @@ public class CitasMedicasBD extends SQLiteOpenHelper {
     @Override
     //creacion base de datos
     public void onCreate(SQLiteDatabase BaseDeDatos) {
-        BaseDeDatos.execSQL("CREATE TABLE Citas ( id int primary key, Cedula text, Nombre text, Apellidos text, Fecha text, Hora text, TipoCita int)");
+        BaseDeDatos.execSQL("CREATE TABLE Citas ( Cedula text, Nombre text, Apellidos text, Fecha text, Hora text, TipoCita int)");
 
 
         BaseDeDatos.execSQL("INSERT INTO Citas (Cedula,Nombre,Apellidos,Fecha,Hora,TipoCita ) VALUES ('71375739','Andres Felipe', 'Graciano Monsalve', '28-12-2022', '12:30:00', 1)");
@@ -24,7 +24,7 @@ public class CitasMedicasBD extends SQLiteOpenHelper {
         BaseDeDatos.execSQL("INSERT INTO Citas (Cedula,Nombre,Apellidos,Fecha,Hora,TipoCita ) VALUES ('1214714441','Katerine Juliet', 'Diaz Lasso', '11-12-2022', '03:00:00', 3)");
         BaseDeDatos.execSQL("INSERT INTO Citas (Cedula,Nombre,Apellidos,Fecha,Hora,TipoCita ) VALUES ('71375739','Andres Felipe', 'Graciano Monsalve', '25-12-2022', '12:30:00', 2)");
 
-        BaseDeDatos.execSQL("CREATE TABLE TipoCita (id int primary key, nombre text)");
+        BaseDeDatos.execSQL("CREATE TABLE TipoCita (nombre text)");
         BaseDeDatos.execSQL("INSERT INTO TipoCita (nombre) VALUES('Odontologica')"); // id 1
         BaseDeDatos.execSQL("INSERT INTO TipoCita (nombre) VALUES('Medico General')"); // id 2
         BaseDeDatos.execSQL("INSERT INTO TipoCita (nombre) VALUES('Ginecologia')"); //id 3
