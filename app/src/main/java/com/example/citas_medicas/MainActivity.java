@@ -10,9 +10,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter; // Asegúrate de tener esta importación
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner; // Asegúrate de tener esta importación
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
@@ -22,9 +22,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList; // Asegúrate de tener esta importación
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List; // Asegúrate de tener esta importación
+import java.util.List;
 import java.util.Locale;
 
 import java.util.regex.*;
@@ -34,7 +34,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 //se realiza mi método main para inicializar el programa
 public class MainActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
 
-
+    // Declaración de variables miembro
     private String dato;
     private EditText txtCedula, txtNombre, txtApellido, txtFecha, txtHora;
     private Spinner spinnerTipoCita; // Agregamos el Spinner
@@ -46,20 +46,25 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//declaro variables
+        // Inicialización de las variables de interfaz de usuario
         txtCedula = findViewById(R.id.txt_cedula);
         txtNombre = findViewById(R.id.txt_nombre);
         txtApellido = findViewById(R.id.txt_apellido);
         txtFecha = findViewById(R.id.txt_fecha);
         txtHora = findViewById(R.id.txt_hora);
-        dato = getIntent().getStringExtra("dato"); // aca obtenemos el valor de la variable del segundo activity
+
+        // Obtenemos el valor de la variable del segundo activity
+        dato = getIntent().getStringExtra("dato");
         txtCedula.setText(dato);
+
         // Inicializamos el Spinner
         spinnerTipoCita = findViewById(R.id.spinner_tipo_cita); // Asociamos el Spinner desde el layou cargarDatosSpinner();
-        cargarDatosSpinner();
+        cargarDatosSpinner();// Cargamos los datos del Spinner desde la base de datos
 
         // debajo usamos la estructura alerta para mostrar un mensaje
+        // Verificamos si hay datos en el campo de cédula
         if (txtCedula.length() != 0) {
+            // Mostramos un mensaje con la cédula escaneada
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Resultado del scanner");
             builder.setMessage("Se lee la cedula:  " + dato);
@@ -71,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
 
-    // Método para cargar las opciones en el Spinner
+    // Método para cargar las opciones en el Spinner desde la base de datos
     private void cargarDatosSpinner() {
         CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
         SQLiteDatabase baseDeDatos = admin.getReadableDatabase();
@@ -94,38 +99,19 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
 
-       /* // Método para obtener el nombre del tipo de cita a partir de su ID
-        private String obtenerNombreTipoCita(int tipoCitaId) {
-            CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
-            SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-            Cursor cursor = BaseDeDatos.rawQuery("SELECT nombre FROM TipoCita WHERE rowid = ?", new String[]{String.valueOf(tipoCitaId)});
+    // Método para manejar el resultado del escáner (no implementado)
+    @Override
+    public void handleResult(Result result) {
+    // Aquí puedes implementar la lógica para manejar el resultado del escáner
+    }
 
-            if (cursor.moveToFirst()) {
-                String nombre = cursor.getString(0);
-                return nombre;
-            } else {
-                return "Desconocido";
-            }
-        }
-
-        // Método para obtener el tipo de cita seleccionado en un clic de botón
-        public void obtenerTipoCitaSeleccionado(View view) {
-            String tipoCitaSeleccionado = spinnerTipoCita.getSelectedItem().toString();
-            // Puedes utilizar el tipoCitaSeleccionado según tus necesidades
-        }*/
-
-
-
+    // Método para el botón que nos lleva al segundo activity
     public void btn(View v) {  // metodo que se despliega desde onClick del boton y nos lleva al intent al que apunta
         Intent siguiente = new Intent(this, SegundoActivity.class);
         startActivity(siguiente);
     }
 
-    @Override
-    public void handleResult(Result result) {
-
-    }
-
+    // Método para buscar la cédula en la base de datos
     //validacion del ingreso de la cedula
     public void buscarCedula(View v) {
         String ced = txtCedula.getText().toString();
@@ -166,8 +152,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 String apellidos = fila.getString(1);
                 String fecha1 = fila.getString(2);
                 String hora = fila.getString(3);
-
-
 
 
                 txtNombre.setText(nombre);
@@ -211,9 +195,8 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
 
-   // Método para obtener el nombre del tipo de cita a partir de su ID
-    private String obtenerNombreTipoCita(int tipoCitaId)
-    {
+    // Método para obtener el nombre del tipo de cita a partir de su ID
+    private String obtenerNombreTipoCita(int tipoCitaId) {
         CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
         Cursor cursor = BaseDeDatos.rawQuery("SELECT nombre FROM TipoCita WHERE rowid = ?", new String[]{String.valueOf(tipoCitaId)});
@@ -221,14 +204,12 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         // Cursor cursor = BaseDeDatos.rawQuery("SELECT nombre, rowid FROM TipoCita ", new String[]{});
 
 
-        if (cursor.moveToFirst())
-        {
+        if (cursor.moveToFirst()) {
             String nombre = cursor.getString(0);
-           // Integer elId = cursor.getInt(1);
+            // Integer elId = cursor.getInt(1);
 
             return nombre;
-        } else
-        {
+        } else {
             return "Desconocido";
         }
     }
@@ -268,13 +249,12 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
 
-
     // Método modificado para obtener el tipo de cita seleccionado
     // metodo para insertar en la base de datos empleando un boton y sensando los campos
     public void insertar(View view) {
         CitasMedicasBD admin = new CitasMedicasBD(this, nombreBD, null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-//declaro variables y asigno strings
+        //declaro variables y asigno strings
         String cedula = txtCedula.getText().toString();
         String nombre = txtNombre.getText().toString();
         String apellido = txtApellido.getText().toString();
@@ -304,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
             return;
         }
 
-//ingreso datos a la base de datos
+        //ingreso datos a la base de datos
         if (!cedula.isEmpty() && !nombre.isEmpty() && !apellido.isEmpty() && !fecha.isEmpty() && !hora.isEmpty()) {
 
             Cursor cursor = BaseDeDatos.rawQuery("Select * from Citas where Cedula = ? and Fecha = ? and Hora = ?", new String[]{cedula, fecha, hora});
@@ -351,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     //metodo para validar ingreso de campo de cedula
     private boolean esNumerico(String valor) {
+        // Código para validar si es numérico
         if (valor == null) {
             return false;
         }
@@ -364,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     //metodo para validar ingreso de campo de fecha
     private boolean esFecha(String valor) {
+        // Código para validar si es una fecha válida
         DateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         sdf.setLenient(false);
         try {
@@ -376,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     //metodo para validar ingreso en campo de hora militar
     private boolean Time24HoursValidator(String valor) {
-
+        //Código para validar si es una hora militar válida
         try {
             DateTimeFormatter.ofPattern("HH:mm").parse(valor);
         } catch (DateTimeParseException e) {
@@ -387,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         return true;
     }
 
-    //CLASE para validar horario militar
+    // Clase interna para validar el formato de la hora en formato militar
     public class Time24HoursValidator {
 
         private Pattern pattern;
