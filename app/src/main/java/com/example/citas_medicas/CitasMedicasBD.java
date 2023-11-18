@@ -28,6 +28,7 @@ public class CitasMedicasBD extends SQLiteOpenHelper {
         BaseDeDatos.execSQL("INSERT INTO TipoCita (nombre) VALUES('Odontologica')"); // id 1
         BaseDeDatos.execSQL("INSERT INTO TipoCita (nombre) VALUES('Medico General')"); // id 2
         BaseDeDatos.execSQL("INSERT INTO TipoCita (nombre) VALUES('Ginecologia')"); //id 3
+        BaseDeDatos.execSQL("INSERT INTO TipoCita (nombre) VALUES('Sicologia')"); // id 4
     }
 
     @Override
